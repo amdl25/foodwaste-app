@@ -8,9 +8,13 @@ async function getUser(){
     return await User.findAll();
 }
 
-async function getUserId(id){
-    return await User.findByPk(id);
-}
+async function getUserByEmail(email) {
+    return await User.findOne({
+      where: {
+        UserEmail: email,
+      },
+    });
+  }
 
 async function updateUser(id, user){
     if(parseInt(id) !== user.UserId)
@@ -30,4 +34,4 @@ async function deleteUser(id){
     return {error: false, msg: "", obj: await deleteUserU.destroy()}
 }
 
-export {createUser, getUser, getUserId, updateUser, deleteUser}
+export {createUser, getUser, getUserByEmail, updateUser, deleteUser}

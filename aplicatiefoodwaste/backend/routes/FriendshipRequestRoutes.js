@@ -108,7 +108,25 @@ friendshipRequestRouter.route('/friendshipRequest/:email').get(async (req, res) 
   }
 });
 
+friendshipRequestRouter.route('/friendshipRequest/list').get(async (req, res) => {
+  try {
+    const friendshipRequests = await User.findAll({
+      where: {
+        UserId: senderId,
 
+      },
+      include: {
+        model: FriendshipRequest,
+        as: "SenderRequest"
+      },
+      raw: true
+    })
+    res.status(200).json(friendshipRequests);
+  }catch (error) {
+    console.error('Error fetching friendship requests:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 
 export default friendshipRequestRouter;

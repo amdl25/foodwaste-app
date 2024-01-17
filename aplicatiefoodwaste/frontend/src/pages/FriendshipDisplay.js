@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams} from 'react-router-dom';
 import './stiluri.css';
@@ -9,6 +9,20 @@ const FriendshipDisplay = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
+  const [friendRequests, setFriendRequests] = useState([]);
+
+  const fetchFriendRequests = async () => {
+    try {
+      const response = await axios.get('http://localhost:8000/api/send-request' + userEmail);
+      setFriendRequests(response.data);
+    } catch (error) {
+      console.error('Error fetching friend requests:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchFriendRequests();
+  }, []);
   const handleSearchFriend = async () => {
     try {
       const response = await axios.get(`http://localhost:8000/api/user/` + searchEmail);
@@ -33,14 +47,14 @@ const FriendshipDisplay = () => {
 
   const handleAdaugaPrieten = async () => {
     try {
-      const senderId = userEmail;
-      const receiverId = searchEmail;
-
+      const senderEmail = userEmail;
+      const receiverEmail = searchEmail;
+  
       const response = await axios.post('http://localhost:8000/api/send-request', {
-        senderId: senderId,
-        receiverId: receiverId,
+        senderEmail: senderEmail,
+        receiverEmail: receiverEmail,
       });
-
+  
       if (response.status === 201) {
         setSuccessMessage('Friendship request sent successfully!');
         setErrorMessage('');
@@ -50,12 +64,16 @@ const FriendshipDisplay = () => {
       }
     } catch (error) {
       console.error('Adauga error:', error);
-
-      if (error.response && error.response.status === 404) {
-        setErrorMessage('User not found.');
-        setSuccessMessage('');
-      } else if (error.response && error.response.status === 400) {
-        setErrorMessage('Friendship request already exists.');
+  
+      if (error.response) {
+        console.error('Error response from server:', error.response.data);
+  
+        if (error.response.data.error === 'Friendship request already exists') {
+          setErrorMessage('Friendship request already exists.');
+        } else {
+          setErrorMessage('Server error. Please try again.');
+        }
+  
         setSuccessMessage('');
       } else {
         setErrorMessage('Error sending friendship request. Please try again.');
@@ -63,6 +81,8 @@ const FriendshipDisplay = () => {
       }
     }
   };
+  
+  
 
   return (
     <div className="main-container">
@@ -90,14 +110,14 @@ const FriendshipDisplay = () => {
       </div>
 
     <div className="right-panel">
-      <ul className="list">
-        <li>List Item 1</li>
-        <li>List Item 2</li>
-        <li>List Item 3</li>
-      </ul>
+    <ul className="list">
+          {friendRequests.map((friend) => (
+            <li key={friend.FriendshipRequestId}></li>
+          ))}
+     </ul>
 
       <div className="bottom-section">
-        <button className="button">Bottom Button</button>
+        <button>Bottom Button</button>
         <input type="text" placeholder="Enter something" />
       </div>
     </div>
@@ -110,3 +130,4 @@ const FriendshipDisplay = () => {
 };
 
 export default FriendshipDisplay;
+

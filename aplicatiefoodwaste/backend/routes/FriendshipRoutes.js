@@ -2,6 +2,7 @@ import express from 'express';
 import { createFriendship, getFriendship, getFriendshipId, updateFriendship, deleteFriendship } from '../dataAccess/FriendshipDa.js';
 import Friendship from '../entities/Friendship.js';
 import FriendshipRequest from '../entities/FriendshipRequest.js';
+import User from '../entities/User.js';
 import { Sequelize } from 'sequelize';
 
 
@@ -79,6 +80,65 @@ friendshipRouter.route('/accept-friend-request/:friendRequestId').post(async (re
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+friendshipRouter.route('/accept-friend-request').post(async (req, res) => {
+  const { userEmail, senderEmail } = req.body;
+
+  try {
+    const friendRequest = await FriendshipRequest.findOne({
+      where: {
+        senderId: { [Sequelize.Op.ne]: null },
+        receiverId: { [Sequelize.Op.ne]: null },
+      },
+    });
+  
+    if (!friendRequest) {
+      res.status(404).json({ error: 'Friend request not found' });
+      return;
+    }
+  
+    const existingFriendship = await Friendship.findOne({
+      where: {
+        [Sequelize.Op.or]: [
+          { senderId: friendRequest.senderId, receiverId: friendRequest.receiverId },
+          { senderId: friendRequest.receiverId, receiverId: friendRequest.senderId },
+        ],
+      },
+    });
+  
+    if (existingFriendship) {
+      res.status(400).json({ error: 'Friendship already exists' });
+      return;
+    }
+  
+    const [user, sender] = await Promise.all([
+      User.findOne({ where: { UserEmail: userEmail } }),
+      User.findOne({ where: { UserEmail: senderEmail } }),
+    ]);
+  
+    if (!user || !sender) {
+      res.status(404).json({ error: 'User or sender not found' });
+      return;
+    }
+  
+    await Friendship.create({
+      senderId: user.UserId,
+      receiverId: sender.UserId,
+    });
+  
+    await FriendshipRequest.destroy({
+      where: {
+        FriendshipRequestId: friendRequest.FriendshipRequestId,
+      },
+    });
+  
+    res.status(200).json({ message: 'Friend request accepted successfully' });
+  } catch (error) {
+    console.error('Error accepting friend request:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 
 export default friendshipRouter;
 

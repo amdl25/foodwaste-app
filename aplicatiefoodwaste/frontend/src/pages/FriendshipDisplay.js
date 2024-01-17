@@ -117,8 +117,8 @@ const FriendshipDisplay = () => {
      </ul>
 
       <div className="bottom-section">
-        <button>Bottom Button</button>
-        <input type="text" placeholder="Enter something" />
+        <button>Accepta prietenie</button>
+        <input type="text" placeholder="Email celui care a cerut prietenia" />
       </div>
     </div>
   </div>
@@ -128,6 +128,7 @@ const FriendshipDisplay = () => {
 </div>
   );
 };
+
 
 export default FriendshipDisplay;
 

@@ -1,0 +1,72 @@
+html, body {
+    height: 100%;
+    margin: 0;
+  }
+  
+  .main-container {
+    display: flex;
+    height: 100vh;
+  }
+  
+  .left-panel {
+    flex: 1;
+    overflow: auto;
+    padding: 20px;
+    background-color: #f0f0f0;
+  }
+  
+  .button {
+    display: block;
+    margin-bottom: 10px;
+    padding: 15px 20px;
+    font-size: 18px;
+    width: 250px;
+  }
+
+  
+  .button-home{
+    display: block;
+    margin: 10px auto;
+    padding: 15px 20px;
+    font-size: 18px;
+    width: 250px;
+  }
+  
+  .right-panel {
+    flex: 1;
+    overflow: auto;
+    padding: 20px;
+    background-color: #e0e0e0;
+  }
+  
+  .list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .list li {
+    margin-bottom: 10px;
+  }
+  
+  .bottom-section {
+    margin-top: 20px;
+  }
+
+  .container.login {
+    font-size: 18px;
+  }
+  
+  .container.login input {
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .container.login button.btnLogin {
+    display: block;
+    margin: 10px auto;
+    padding: 15px 20px;
+    font-size: 18px;
+    width: 250px;
+  }
+  
+  

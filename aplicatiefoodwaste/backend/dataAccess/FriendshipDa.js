@@ -1,5 +1,7 @@
 import Friendship from '../entities/Friendship.js';
 import { validateUserIdAndFriendId, checkExistingFriendship } from '../dataAccess/validations/validationsFriendshipRequest.js';
+import {Op} from 'sequelize';
+import User from '../entities/User.js';
 
 async function createFriendship(userId, friendId) {
   const userIdAndFriendIdValidation = validateUserIdAndFriendId(userId, friendId);
@@ -49,4 +51,43 @@ async function deleteFriendship(id){
     return {error: false, msg: "", obj: await deleteFriendshipF.destroy()}
 }
 
-export {createFriendship, getFriendship, getFriendshipId, updateFriendship, deleteFriendship}
+async function getFriendsList(userEmail) {
+  try {
+    const user = await User.findOne({
+      where: {
+        UserEmail: userEmail,
+      },
+    });
+
+    if (!user) {
+      return [];
+    }
+
+    const friendsList = await Friendship.findAll({
+      where: {
+        [Op.or]: [
+          { senderId: user.UserId },
+          { receiverId: user.UserId },
+        ],
+      },
+      include: [
+        {
+          model: User,
+          as: 'Sender',
+          attributes: ['UserId', 'UserEmail'],
+        },
+        {
+          model: User,
+          as: 'Receiver',
+          attributes: ['UserId', 'UserEmail'],
+        },
+      ],
+    });
+
+    return friendsList;
+  } catch (error) {
+    console.error('Error fetching friends list:', error);
+    throw error;
+  }
+}
+export {createFriendship, getFriendship, getFriendshipId, updateFriendship, deleteFriendship, getFriendsList}

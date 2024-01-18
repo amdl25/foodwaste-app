@@ -1,10 +1,14 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
 import './stiluri.css';
 
 const Principal = () => {
   const navigate = useNavigate();
   const { userEmail } = useParams();
+  const [products, setProducts] = useState([]);
+  const [selectedProductId, setSelectedProductId] = useState(null);
+  const [mesaj, stateMesaj] = useState(null);
 
   const handleAddProductClick = () => {
     navigate('/login/principal/add-product/' + userEmail);
@@ -18,31 +22,67 @@ const Principal = () => {
     navigate('/login/principal/grupuri/' + userEmail);
   };
 
+  const handleRemoveProduct = async () => {
+      try {
+        await axios.delete(`http://localhost:8000/api/product/` );
+        fetchProductList();
+      } catch (error) {
+        console.error('Error removing product:', error);
+      }
+
+      stateMesaj('Userul va fi notificat');
+    }
+  
+
+  const fetchProductList = async () => {
+    try {
+      const response = await axios.get('http://localhost:8000/api/product');
+      setProducts(response.data);
+    } catch (error) {
+      console.error('Fetch product list error:', error);
+    }
+  };
+
+
+  useEffect(() => {
+    fetchProductList();
+  }, []);
+
   return (
-    <div className="main-container">
+    <div className="container">
       <div className="left-panel">
+      
         <button className="button" onClick={handleAddProductClick}>
           Adauga produs
         </button>
         <button className="button" onClick={handleSeeingFriendship}>Cereri prietenie</button>
         <button className="button" onClick={handleSeeingGrupuri}>Grupuri</button>
         <button className="button">Lista prieteni</button>
-      </div>
+        </div>
+     
 
       <div className="right-panel">
-        <ul className="list">
-          <h1>Lista alimente disponibile</h1>
-          <li>List Item 1</li>
-          <li>List Item 2</li>
-          <li>List Item 3</li>
-        </ul>
+        <h1>Lista alimentelor disponibile</h1>
+      <ul className="list">
+    {products.map((product) => (
+      <li key={product.productId}>
+        {product.ProductName} ------ {product.ProductCategory} ----- {product.ProductExpirationDate}
+        .------id-posesor = {product.UserId}
+      </li>
+    ))}
+  </ul>
+
 
         <div className="bottom-section">
-          <button >Alege aliment</button>
+          <button onClick = {handleRemoveProduct} >Alege aliment</button>
           <input type="text" placeholder="Il vreau!" />
           <input type="text" placeholder="Id-ul posesorului" />
+          {mesaj && (
+  <p style={{ color: 'green', marginTop: '10px' }}>{mesaj}</p>
+)}
         </div>
       </div>
+
     </div>
   );
 };

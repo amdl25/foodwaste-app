@@ -1,11 +1,24 @@
 import Product from '../entities/Product.js';
+import {Op,literal} from 'sequelize';
+import { Sequelize } from 'sequelize';
+import {format} from 'date-fns';
+import moment from 'moment';
+import User from '../entities/User.js';
 
 async function createProduct(product){
     return await Product.create(product);
 }
 
 async function getProduct(){
-    return await Product.findAll();
+    const currentDate = new Date();
+    const products = await Product.findAll({
+        where: {
+            ProductExpirationDate : {
+                [Op.lt]: literal('CURRENT_DATE + INTERVAL 7 DAY'),
+            },
+        },
+    });
+    return products;
 }
 
 async function getProductId(id){
@@ -31,4 +44,30 @@ async function deleteProduct(id){
     return {error: false, msg: "", obj: await deleteProductP.destroy()}
 }
 
-export {createProduct, getProduct, getProductId, updateProduct, deleteProduct}
+async function getUserProducts(email){
+
+    try {
+        const user = await User.findOne({
+          where: {
+            UserEmail: email,
+          },
+        });
+    
+        if (!user) {
+          return [];
+        }
+    
+        const userProducts = await Product.findAll({
+          where: {
+            UserId: user.UserId,
+          },
+        });
+    
+        return userProducts;
+      } catch (error) {
+        console.error('Error fetching user products:', error);
+        throw error;
+      }
+}
+
+export {createProduct, getProduct, getProductId, updateProduct, deleteProduct, getUserProducts}

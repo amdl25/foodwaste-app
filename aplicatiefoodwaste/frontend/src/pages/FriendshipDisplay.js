@@ -102,7 +102,7 @@ const FriendshipDisplay = () => {
   }, []);
 
   return (
-    <div className="main-container">
+    <div className="container">
     <div className="left-panel">
     <input
         type="text"
@@ -110,12 +110,14 @@ const FriendshipDisplay = () => {
         value={searchEmail}
         onChange={(e) => setSearchEmail(e.target.value)}
       />
+      <div class="butoaneFriendship">
       <button className="buttonCauta" onClick={handleSearchFriend}>
         Search
       </button>
       <button className="buttonAdauga" onClick={handleAdaugaPrieten}>
         Adauga prieten
       </button>
+      </div>
 
       <div>
         {successMessage && (
@@ -141,8 +143,9 @@ const FriendshipDisplay = () => {
       </ul>
 
       <div className="bottom-section">
+      <input type="text" placeholder="Email celui care a cerut prietenia" />
         <button onClick={handleAcceptare}>Accepta prietenie</button>
-        <input type="text" placeholder="Email celui care a cerut prietenia" />
+        
       </div>
     </div>
   </div>

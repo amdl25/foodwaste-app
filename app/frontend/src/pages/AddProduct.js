@@ -40,7 +40,6 @@ const AddProduct = () => {
         ProductExpirationDate: expirationDate,
         ProductQuantity: quantity,
         UserEmail: userEmail
-
       });
 
       if (response.status === 201) {

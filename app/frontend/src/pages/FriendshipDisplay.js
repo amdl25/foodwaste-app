@@ -31,7 +31,7 @@ const FriendshipDisplay = () => {
   
       if (error.response) {
         console.error('Error response from server:', error.response.data);
-  
+
         if (error.response.data.error === 'Friendship request already exists') {
           setErrorMessage('Friendship request already exists.');
         } else {

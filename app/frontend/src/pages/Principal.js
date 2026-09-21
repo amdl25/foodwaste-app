@@ -26,7 +26,6 @@ const Principal = () => {
   };
 
   const handleAnnounceOwner= async () => {
-     
       stateMesaj('Ownerul va fi notificat');
     }
   
@@ -79,7 +78,6 @@ const Principal = () => {
   return (
     <div className="container">
       <div className="left-panel">
-      
         <button  onClick={handleAddProductClick}>
           Adauga produs
         </button>

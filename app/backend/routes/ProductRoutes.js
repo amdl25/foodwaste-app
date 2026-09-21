@@ -84,4 +84,3 @@ productRouter.route('/add-product').post(async (req, res) => {
 });
 
 export default productRouter;
-

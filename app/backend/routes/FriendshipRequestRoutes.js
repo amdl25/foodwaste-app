@@ -135,5 +135,3 @@ friendshipRequestRouter.route('/friendshipRequest/list').get(async (req, res) =>
 
 
 export default friendshipRequestRouter;
-
-

@@ -108,12 +108,12 @@ friendshipRouter.route('/accept-friend-request').post(async (req, res) => {
         ],
       },
     });
-  
+
     if (existingFriendship) {
       res.status(400).json({ error: 'Friendship already exists' });
       return;
     }
-  
+
     const [user, sender] = await Promise.all([
       User.findOne({ where: { UserEmail: userEmail } }),
       User.findOne({ where: { UserEmail: senderEmail } }),
@@ -128,7 +128,7 @@ friendshipRouter.route('/accept-friend-request').post(async (req, res) => {
       senderId: user.UserId,
       receiverId: sender.UserId,
     });
-  
+
     await FriendshipRequest.destroy({
       where: {
         FriendshipRequestId: friendRequest.FriendshipRequestId,
@@ -144,4 +144,3 @@ friendshipRouter.route('/accept-friend-request').post(async (req, res) => {
 
 
 export default friendshipRouter;
-

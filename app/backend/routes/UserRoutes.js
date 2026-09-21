@@ -99,4 +99,3 @@ userRouter.route('/login').post(async (req, res) => {
   });
 
 export default userRouter;
-

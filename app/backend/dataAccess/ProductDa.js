@@ -56,7 +56,7 @@ async function getUserProducts(email){
         if (!user) {
           return [];
         }
-    
+
         const userProducts = await Product.findAll({
           where: {
             UserId: user.UserId,

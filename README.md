@@ -71,6 +71,3 @@ npm start
 ```
 
 The frontend runs on `http://localhost:3000` and calls the API at `http://localhost:8000` (configured in `app/frontend/src/pages/config.js`).
-
-## Notes
-- This is a learning project. Authentication is basic email and password matching.

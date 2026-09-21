@@ -73,5 +73,4 @@ npm start
 The frontend runs on `http://localhost:3000` and calls the API at `http://localhost:8000` (configured in `app/frontend/src/pages/config.js`).
 
 ## Notes
-- The `.env` file is not part of the repository. Never commit it.
 - This is a learning project. Authentication is basic email and password matching.
